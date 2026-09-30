@@ -1,0 +1,18 @@
+{% load django_vite %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>React App</title>
+
+  <!-- Automatically loads Vite's HMR client structure in dev mode -->
+  {% vite_hmr_client %}
+
+  <!-- Automatically injects your main React script -->
+  {% vite_asset 'src/main.tsx' %}
+</head>
+<body>
+<div id="root"></div>
+</body>
+</html>
