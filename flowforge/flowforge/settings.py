@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-tgckkw=27!&9!6sq5@4(4a8+!mv#fr!s$g%i6oaz6=ewvl!jsr'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'flowforge_api.apps.FlowforgeApiConfig',
-    'django-vite',
+    'django_vite',
 ]
 
 MIDDLEWARE = [
@@ -58,7 +58,7 @@ ROOT_URLCONF = 'flowforge.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'static', 'dist')],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -134,13 +134,14 @@ REST_FRAMEWORK = {
 
 
 # Django Vite
-# Toggle this based on your environment
-DJANGO_VITE_DEV_MODE = DEBUG
 
 DJANGO_VITE = {
     "default": {
-        # The URL where Vite dev server runs locally
-        "dev_server_url": "http://localhost:5173/",
+        "dev_mode": True,
+        "dev_server_host": "localhost",
+        "dev_server_port": 5173,
+        # Force the dev server path prefix to map to Vite's root configuration
+        "static_url_prefix": "dist",
         # The path to your Vite manifest file in production
         "manifest_path": os.path.join(BASE_DIR, "static", "dist", ".vite", "manifest.json"),
     }

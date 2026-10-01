@@ -1,13 +1,14 @@
 from django.shortcuts import render
-from django.contrib.auth import authenticate, login
-from django.views.decorators.csrf import ensure_csrf_cookie
-from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth import authenticate, login, logout
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 
-from flowforge.flowforge_api.models import Project
-from flowforge.flowforge_api.serializers import ProjectSerializer
+from .models import Project
+from .serializers import ProjectSerializer, UserSerializer
 
 
 @ensure_csrf_cookie
@@ -15,10 +16,11 @@ def index(request):
     return render(request, 'index.html')
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class LoginView(APIView):
-    permission_classes = []
+    permission_classes = [AllowAny]
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
         user = authenticate(request, username=username, password=password)
@@ -28,6 +30,22 @@ class LoginView(APIView):
             return Response({"detail": "Successfully logged in."}, status=status.HTTP_200_OK)
 
         return Response({"detail": "Invalid credentials."}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        logout(request)
+        return Response({"detail": "Successfully logged out."}, status=status.HTTP_200_OK)
+
+
+class MeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class ProjectsView(APIView):

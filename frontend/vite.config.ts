@@ -10,10 +10,14 @@ export default defineConfig({
     emptyOutDir: true,
     manifest: true,
     rollupOptions: {
-      input: './src/main.tsx',
+      input: 'src/main.tsx',
     },
   },
   server: {
+    host: 'localhost',
+    port: 5173,
+    strictPort: true,
+    cors: true,
     // Ensures Vite plays nicely with Django's origin requests in dev mode
     origin: 'http://localhost:5173',
   }
