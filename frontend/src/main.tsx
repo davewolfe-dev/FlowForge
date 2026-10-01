@@ -4,10 +4,8 @@ import './index.css'
 import App from './App.tsx'
 import axios from 'axios'
 
-// attach cookies to every request
+// configure axios to use Django's cookies and CSRF
 axios.defaults.withCredentials = true;
-
-// Configure Axios to match Django's CSRF expectations [1]
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 

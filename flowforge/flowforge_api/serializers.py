@@ -4,6 +4,32 @@ from rest_framework import serializers
 from .models import Project
 
 
+class RegistrationSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(
+        required=True,
+        validators=[UniqueValidator(queryset=User.objects.all(), message='A user with that email already exists.')]
+    )
+    password = serializers.CharField(
+        write_only=True,
+        required=True,
+        style={'input_type': 'password'},
+    )
+
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'last_name', 'email', 'password')
+
+        def create(self, validated_data):
+            user = User.objects.create_user(
+                username=validated_data['username'],
+                email=validated_data['email'],
+                password=validated_data['password'],
+                first_name=validated_data.get('first_name', ''),
+                last_name=validated_data.get('last_name', ''),
+            )
+            return user
+
+
 class UserSerializer(serializers.ModelSerializer):
     is_admin = serializers.BooleanField(read_only=True, source='is_staff')
 
