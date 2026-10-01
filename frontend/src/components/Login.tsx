@@ -33,12 +33,24 @@ export default function Login(): React.JSX.Element {
             {error && <p style={{ color: 'red' }}>{error}</p>}
             <form onSubmit={handleLogin}>
                 <div>
-                    <label>Username:</label>
-                    <input type="text" value={username} onChange={e => setUsername(e.target.value)} required />
+                    <label htmlFor="username-input">Username:</label>
+                    <input
+                        id="username-input"
+                        data-testid="username-field"
+                        type="text"
+                        value={username}
+                        onChange={e => setUsername(e.target.value)}
+                        required />
                 </div>
                 <div>
-                    <label>Password:</label>
-                    <input type="password" value={password} onChange={e => setPassword(e.target.value)} required />
+                    <label htmlFor="password-input">Password:</label>
+                    <input
+                        id="password-input"
+                        data-testid="password-field"
+                        type="password"
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                        required />
                 </div>
                 <button type="submit">Log In</button>
             </form>

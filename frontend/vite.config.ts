@@ -1,5 +1,5 @@
 import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -20,5 +20,10 @@ export default defineConfig({
     cors: true,
     // Ensures Vite plays nicely with Django's origin requests in dev mode
     origin: 'http://localhost:5173',
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom', // mimic browser dom in terminal
+    setupFiles: './src/setupTests.ts',
   }
 });

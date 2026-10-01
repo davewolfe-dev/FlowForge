@@ -1,11 +1,14 @@
 import React from "react";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from 'react-router';
 
 export default function Dashboard():React.JSX.Element {
     const {user, logout} = useAuth();
+    const navigate = useNavigate();
 
     const handleLogoutClick = async () => {
         await logout();
+        navigate('/login');
     }
 
     return (
