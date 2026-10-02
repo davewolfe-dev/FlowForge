@@ -2,11 +2,7 @@ import React, { useState } from 'react';
 import { type AxiosError } from 'axios';
 import { useNavigate } from 'react-router';
 import { useAuth } from "../context/AuthContext.tsx";
-
-// Type definition for Django Rest Framework error response
-interface DRFErrorResponse {
-    detail?: string;
-}
+import type { DRFErrorResponse } from "../interfaces/Error.ts";
 
 export default function Login(): React.JSX.Element {
     const { login } = useAuth()
@@ -22,8 +18,8 @@ export default function Login(): React.JSX.Element {
         try {
             await login(username, password);
             navigate('/dashboard');
-        } catch (error) {
-            const err = error as AxiosError<DRFErrorResponse>;
+        } catch (exception) {
+            const err = exception as AxiosError<DRFErrorResponse>;
             setError(err.response?.data?.detail || "Incorrect username or password");
         }
     };

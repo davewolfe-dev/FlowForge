@@ -4,7 +4,8 @@ import { BrowserRouter, Routes, Route } from 'react-router';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './components/Login';
-import Dashboard from "./components/Dashboard.tsx";
+import Dashboard from "./components/Dashboard";
+import Register from "./components/Register";
 
 // Inline simple definitions to ensure it works instantly
 const Home = (): React.JSX.Element => <h1>React Home Page</h1>;
@@ -18,6 +19,7 @@ function App(): React.JSX.Element {
             {/* Public Routes */}
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
 
             {/* Protected Routes */}
             <Route element={<ProtectedRoute />}>

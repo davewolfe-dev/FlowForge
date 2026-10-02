@@ -24,7 +24,7 @@ vi.mock('react-router', async (importOriginal) => {
     }
 });
 
-describe("Dashboard with welcome message and logout function", () => {
+describe("Dashboard component with welcome message and logout function", () => {
     it('should display a message with the username and email address', async () => {
         // simulate an authenticated user environment
         (useAuth as Mock).mockReturnValue({

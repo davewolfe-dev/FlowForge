@@ -16,12 +16,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, re_path, include
+from django.views.generic import RedirectView
 
 from flowforge_api.views import index
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('flowforge_api.urls')),
+
+    # redirect admin to admin/ to prevent 404 error from React Router
+    path('admin', RedirectView.as_view(url='/admin/', permanent=True)),
+
     # keep this catch-all pattern at very bottom for React Router
     re_path(r'^.*$', index, name='index'),
 ]

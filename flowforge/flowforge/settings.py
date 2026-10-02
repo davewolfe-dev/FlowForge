@@ -182,6 +182,8 @@ MAILERS = {
     },
 }
 
+APPEND_SLASH = True
+
 # import local_settings.py if it exists (local_settings.py should NOT be in git!!!)
 try:
     from .local_settings import *

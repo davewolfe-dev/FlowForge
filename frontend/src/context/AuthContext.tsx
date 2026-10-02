@@ -1,23 +1,6 @@
-import React, {createContext, useState, useEffect, useContext, type ReactNode} from "react";
+import React, {createContext, useState, useEffect, useContext} from "react";
 import axios from "axios";
-
-export interface User {
-    id: number;
-    username: string;
-    email: string;
-}
-
-interface AuthContextType {
-    user: User | null;
-    setUser: React.Dispatch<React.SetStateAction<User | null>>;
-    loading: boolean;
-    login: (username: string, password: string) => Promise<void>;
-    logout: () => Promise<void>;
-}
-
-interface AuthProviderProps {
-    children: ReactNode;
-}
+import type {AuthContextType, AuthProviderProps, User} from "../interfaces/Auth.ts";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -49,7 +32,7 @@ export function AuthProvider({ children }: AuthProviderProps):React.JSX.Element 
 
     const logout = async (): Promise<void> => {
         try {
-            await axios.post('/api/logout');
+            await axios.post('/api/logout/');
             setUser(null);
         } catch (error) {
             console.error('Logout Failed:', error);

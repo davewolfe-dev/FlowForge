@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 
 from .models import Project
-from .serializers import ProjectSerializer, UserSerializer
+from .serializers import ProjectSerializer, UserSerializer, RegistrationSerializer
 
 
 @ensure_csrf_cookie
