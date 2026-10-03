@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 
 from .models import Project
-from .serializers import ProjectSerializer, UserSerializer, RegistrationSerializer
+from .serializers import ProjectSerializer, UserSerializer, RegistrationSerializer, AllProjectsSerializer
 
 
 @ensure_csrf_cookie
@@ -73,4 +73,14 @@ class ProjectsView(APIView):
         projects = Project.objects.filter(owner=request.user).order_by("-updated_at")
 
         serializer = ProjectSerializer(data=projects, many=True)
+        return Response(serializer.data)
+
+
+class AllProjectsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        projects = Project.objects.filter(owner=request.user).order_by("-updated_at")
+
+        serializer = AllProjectsSerializer(data=projects, many=True)
         return Response(serializer.data)
