@@ -46,6 +46,7 @@ describe("Dashboard component with welcome message and logout function", () => {
         expect(username).toBeInTheDocument();
         expect(email).toBeInTheDocument();
     });
+
     it('should logout the user and redirect to login page', async () => {
         // create a tracking reference for the logout function
         const mockLogout = vi.fn().mockResolvedValue(undefined);

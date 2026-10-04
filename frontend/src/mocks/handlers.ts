@@ -19,4 +19,16 @@ export const handlers = [
             detail: "Successfully logged in",
         }, { status: 200 });
     }),
+
+    // mock /api/register/ (success state)
+    http.post('/api/register/', () => {
+        return HttpResponse.json({
+            id: 101,
+            username: "testuser",
+            email: "test@test.com",
+            first_name: "Test",
+            last_name: "User",
+            is_admin: false,
+        }, { status: 201 });
+    }),
 ]

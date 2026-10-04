@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+import django.contrib.auth.password_validation as validators
+from django.core.exceptions import ValidationError as DjangoValidationError
 
 from .models import Project
 
@@ -15,6 +17,16 @@ class RegistrationSerializer(serializers.ModelSerializer):
         required=True,
         style={'input_type': 'password'},
     )
+
+    def validate_password(self, value):
+        """Validates that the password meets requirements in Django's configured AUTH_PASSWORD_VALIDATORS setting."""
+        try:
+            validators.validate_password(password=value, user=None)
+        except DjangoValidationError as e:
+            # re-raise exception as DRF-compliant error
+            raise serializers.ValidationError(list(e.messages))
+
+        return value
 
     def create(self, validated_data):
         user = User.objects.create_user(
