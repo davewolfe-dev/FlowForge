@@ -23,15 +23,12 @@ class RegisterView(APIView):
     # create a new user and log them in immediately after signup
     def post(self, request):
         serializer = RegistrationSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
+        serializer.is_valid(raise_exception=True)
 
-            login(request, user)
-
-            user_data = UserSerializer(user).data
-            return Response(user_data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        user = serializer.save()
+        login(request, user)
+        user_data = UserSerializer(user).data
+        return Response(user_data, status=status.HTTP_201_CREATED)
 
 
 @method_decorator(csrf_exempt, name='dispatch')

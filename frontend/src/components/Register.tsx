@@ -2,8 +2,14 @@ import React, { useState } from 'react';
 import axios, { type AxiosError } from 'axios';
 import { useNavigate } from 'react-router';
 import { useAuth } from "../context/AuthContext.tsx";
-import type { DRFErrorResponse } from "../interfaces/Error.ts";
 import type {User} from "../interfaces/Auth.ts";
+
+interface RegistrationErrors {
+    username?: string[];
+    password?: string[];
+    email?: string[];
+    detail?: string;
+}
 
 export default function Register():React.JSX.Element {
     const { setUser } = useAuth()
@@ -12,27 +18,32 @@ export default function Register():React.JSX.Element {
     const [email, setEmail] = useState<string>('');
     const [first_name, setFirstName] = useState<string>('');
     const [last_name, setLastName] = useState<string>('');
-    const [error, setError] = useState<string>('');
+    const [fieldErrors, setFieldErrors] = useState<RegistrationErrors>({});
     const navigate = useNavigate();
 
     const handleRegister = async (e:React.SubmitEvent<HTMLFormElement>):Promise<void> => {
         e.preventDefault();
-        setError('');
+        setFieldErrors({})
 
         try {
             const response = await axios.post<User>('/api/register/', { username, password, email, first_name, last_name });
             setUser(response.data);
             navigate('/dashboard');
         } catch (exception) {
-            const err = exception as AxiosError<DRFErrorResponse>;
-            setError(err.response?.data?.detail || "Username already exists");
+            const err = exception as AxiosError<RegistrationErrors>;
+            if (err.response && err.response.data) {
+                setFieldErrors(err.response.data);
+            } else {
+                setFieldErrors({detail: "An unexpected error occurred."})
+            }
         }
     };
 
     return (
         <div style={{ maxWidth: '300px', margin: '50px auto' }}>
             <h2>Register</h2>
-            {error && <p style={{ color: 'red' }}>{error}</p>}
+            {/* global error fallback check */}
+            {fieldErrors.detail && <p style={{ color: 'red' }}>{fieldErrors.detail}</p>}
             <form onSubmit={handleRegister}>
                 <div>
                     <label htmlFor="username-input">Username:</label>
@@ -43,6 +54,11 @@ export default function Register():React.JSX.Element {
                         value={username}
                         onChange={e => setUsername(e.target.value)}
                         required />
+                    {fieldErrors.username && (
+                        <p style={{ color: 'red', margin: '5px 0 0', fontSize: '12px' }}>
+                            {fieldErrors.username.join(' ')}
+                        </p>
+                    )}
                 </div>
                 <div>
                     <label htmlFor="password-input">Password:</label>
@@ -53,6 +69,11 @@ export default function Register():React.JSX.Element {
                         value={password}
                         onChange={e => setPassword(e.target.value)}
                         required />
+                    {fieldErrors.password && (
+                        <p style={{ color: 'red', margin: '5px 0 0', fontSize: '12px' }}>
+                            {fieldErrors.password.join(' ')}
+                        </p>
+                    )}
                 </div>
                 <div>
                     <label htmlFor="email-input">Email:</label>
@@ -63,6 +84,11 @@ export default function Register():React.JSX.Element {
                         value={email}
                         onChange={e => setEmail(e.target.value)}
                         required />
+                    {fieldErrors.email && (
+                        <p style={{ color: 'red', margin: '5px 0 0', fontSize: '12px' }}>
+                            {fieldErrors.email.join(' ')}
+                        </p>
+                    )}
                 </div>
                 <div>
                     <label htmlFor="fname-input">First Name:</label>
