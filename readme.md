@@ -1,7 +1,14 @@
-FlowForge
+# FlowForge
+### Interactive Experience Planner
 
-run frontend as dev (from terminal in frontend dir): npm run dev
+A Django/React app for planning application flow
 
-make sure you activate the python venv first
-run backend as dev (from terminal in flowforge dir): python manage.py runserver
+---
+To run the fontend as a developer, from the terminal in /frontend:
+
+`npm run dev`
+
+To run the backend, make sure you activate the python venv first then from terminal in /flowforge: 
+
+`python manage.py runserver`
 

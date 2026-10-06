@@ -19,21 +19,21 @@ export function AuthProvider({ children }: AuthProviderProps):React.JSX.Element 
                 setLoading(false);
             }
         }
-        checkAuth();
+        void checkAuth();
     }, []);
 
     const login = async (username: string, password: string): Promise<void> => {
         await axios.post('/api/login/', { username, password });
 
-        // After a successful login, instantly hit /api/me/ to get the user data
+        // After a successful login, hit /api/me/ to get the user data
         const response = await axios.get<User>('/api/me/');
-        setUser(response.data); // This triggers a re-render and unlocks ProtectedRoutes!
+        setUser(response.data); // This triggers a re-render and unlocks ProtectedRoutes
     };
 
     const logout = async (): Promise<void> => {
         try {
             await axios.post('/api/logout/');
-            setUser(null);
+            setUser(null); // locks ProtectedRoutes and redirects to login route
         } catch (error) {
             console.error('Logout Failed:', error);
         }
