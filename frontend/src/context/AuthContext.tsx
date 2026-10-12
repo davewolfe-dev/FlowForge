@@ -46,7 +46,7 @@ export function AuthProvider({ children }: AuthProviderProps):React.JSX.Element 
     );
 }
 
-// custom hook with strong safety guarantees to throw an error if used outside Provider
+// custom hook with safety guarantees to throw an error if used outside Provider
 export const useAuth = (): AuthContextType => {
     const context = useContext(AuthContext);
     if (context === undefined) {

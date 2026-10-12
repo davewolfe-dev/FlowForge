@@ -6,9 +6,8 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Login from './components/Login';
 import Dashboard from "./components/Dashboard";
 import Register from "./components/Register";
+import Home from "./components/Home";
 
-// Inline simple definitions to ensure it works instantly
-const Home = (): React.JSX.Element => <h1>React Home Page</h1>;
 const NotFound = (): React.JSX.Element => <h1>404 Page Not Found</h1>;
 
 function App(): React.JSX.Element {

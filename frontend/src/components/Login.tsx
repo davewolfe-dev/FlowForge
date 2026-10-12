@@ -50,6 +50,8 @@ export default function Login(): React.JSX.Element {
                 </div>
                 <button type="submit">Log In</button>
             </form>
+            <br/>
+            <p>Don't have an account? <a href="/register">Sign Up</a></p>
         </div>
     );
 }
