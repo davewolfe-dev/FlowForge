@@ -7,6 +7,7 @@ import type {User} from "../interfaces/Auth.ts";
 interface RegistrationErrors {
     username?: string[];
     password?: string[];
+    confirmPassword?: string[];
     email?: string[];
     detail?: string;
 }
@@ -15,6 +16,7 @@ export default function Register():React.JSX.Element {
     const { setUser } = useAuth()
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const [confirmPassword, setConfirmPassword] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [first_name, setFirstName] = useState<string>('');
     const [last_name, setLastName] = useState<string>('');
@@ -24,6 +26,11 @@ export default function Register():React.JSX.Element {
     const handleRegister = async (e:React.SubmitEvent<HTMLFormElement>):Promise<void> => {
         e.preventDefault();
         setFieldErrors({})
+
+        if (password != confirmPassword) {
+            setFieldErrors({confirmPassword: ['Passwords do not match.']});
+            return;
+        }
 
         try {
             const response = await axios.post<User>('/api/register/', { username, password, email, first_name, last_name });
@@ -40,7 +47,7 @@ export default function Register():React.JSX.Element {
     };
 
     return (
-        <div style={{ maxWidth: '300px', margin: '50px auto' }}>
+        <div style={{ margin: '50px auto' }}>
             <h2>Register</h2>
             {/* global error fallback check */}
             {fieldErrors.detail && <p style={{ color: 'red' }}>{fieldErrors.detail}</p>}
@@ -66,12 +73,29 @@ export default function Register():React.JSX.Element {
                         id="password-input"
                         data-testid="password-field"
                         type="password"
+                        autoComplete="new-password"
                         value={password}
                         onChange={e => setPassword(e.target.value)}
                         required />
                     {fieldErrors.password && (
                         <p style={{ color: 'red', margin: '5px 0 0', fontSize: '12px' }}>
                             {fieldErrors.password.join(' ')}
+                        </p>
+                    )}
+                </div>
+                <div>
+                    <label htmlFor="confirm-password-input">Confirm Password:</label>
+                    <input
+                        id="confirm-password-input"
+                        data-testid="confirm-password-field"
+                        type="password"
+                        autoComplete="new-password"
+                        value={confirmPassword}
+                        onChange={e => setConfirmPassword(e.target.value)}
+                        required />
+                    {fieldErrors.confirmPassword && (
+                        <p style={{ color: 'red', margin: '5px 0 0', fontSize: '12px' }}>
+                            {fieldErrors.confirmPassword.join(' ')}
                         </p>
                     )}
                 </div>

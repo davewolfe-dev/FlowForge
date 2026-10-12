@@ -44,11 +44,13 @@ describe('Register component for new user signup', () => {
         // fill out the input fields
         const usernameInput = await screen.findByTestId('username-field');
         const passwordInput = await screen.findByTestId('password-field');
+        const confirmPasswordInput = await screen.findByTestId('confirm-password-field');
         const emailInput = await screen.findByTestId('email-field');
         const fnameInput = await screen.findByTestId('fname-field');
         const lnameInput = await screen.findByTestId('lname-field');
         fireEvent.change(usernameInput, { target: { value: 'testuser' } });
         fireEvent.change(passwordInput, { target: { value: 'password123' } });
+        fireEvent.change(confirmPasswordInput, { target: { value: 'password123' } });
         fireEvent.change(emailInput, { target: { value: 'test@test.com' } });
         fireEvent.change(fnameInput, { target: { value: 'Test' } });
         fireEvent.change(lnameInput, { target: { value: 'User' } });
@@ -98,9 +100,11 @@ describe('Register component for new user signup', () => {
         // fill out the input fields
         const usernameInput = await screen.findByTestId('username-field');
         const passwordInput = await screen.findByTestId('password-field');
+        const confirmPasswordInput = await screen.findByTestId('confirm-password-field');
         const emailInput = await screen.findByTestId('email-field');
         fireEvent.change(usernameInput, { target: { value: 'duplicate_username' } });
         fireEvent.change(passwordInput, { target: { value: 'invalid_password' } });
+        fireEvent.change(confirmPasswordInput, { target: { value: 'invalid_password' } });
         fireEvent.change(emailInput, { target: { value: 'duplicate_email@test.com' } });
 
         // submit the data
