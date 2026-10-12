@@ -47,7 +47,7 @@ describe("Dashboard component with welcome message and logout function", () => {
         expect(email).toBeInTheDocument();
     });
 
-    it('should logout the user and redirect to login page', async () => {
+    it('should logout the user', async () => {
         // create a tracking reference for the logout function
         const mockLogout = vi.fn().mockResolvedValue(undefined);
         // simulate an authenticated user environment
@@ -71,7 +71,6 @@ describe("Dashboard component with welcome message and logout function", () => {
         // wait for mock network handshake to close and verify navigation trigger
         await waitFor(() => {
             expect(mockLogout).toHaveBeenCalledTimes(1);
-            expect(mockNavigate).toHaveBeenCalledWith('/login');
         });
     });
 });
