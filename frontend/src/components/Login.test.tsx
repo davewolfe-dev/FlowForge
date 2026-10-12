@@ -73,4 +73,34 @@ describe('Login component with network mocking', () => {
         const errorText = await screen.findByText('Invalid username or password');
         expect(errorText).toBeInTheDocument();
     });
+
+    it('falls back to default error if server returns an error with no detail', async () => {
+        // return error with no response body
+        server.use(
+            http.post('/api/login/', () => {
+                return new HttpResponse(null, { status: 400 });
+            })
+        );
+
+        render(
+            <AuthProvider>
+                <MemoryRouter>
+                    <Login />
+                </MemoryRouter>
+            </AuthProvider>
+        );
+
+        // fill out the input fields
+        const usernameInput = await screen.findByTestId('username-field');
+        const passwordInput = await screen.findByTestId('password-field')
+        fireEvent.change(usernameInput, { target: { value: 'wrong_user' } });
+        fireEvent.change(passwordInput, { target: { value: 'wrong_pass' } });
+
+        // submit the data
+        fireEvent.click(screen.getByRole('button', { name: /Log In/i }));
+
+        // verify the error text renders into the view DOM
+        const errorText = await screen.findByText('Incorrect username or password');
+        expect(errorText).toBeInTheDocument();
+    });
 });

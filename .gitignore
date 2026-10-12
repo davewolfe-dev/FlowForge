@@ -1,2 +1,5 @@
 *.sqlite3
 local_settings.py
+
+# vitest coverage reports
+coverage/

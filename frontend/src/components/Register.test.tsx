@@ -71,7 +71,33 @@ describe('Register component for new user signup', () => {
         });
     });
 
-    it('Displays error messages when user registration fails', async () => {
+    it('Displays error message when user registration fails front-end with password mismatch', async () => {
+        render(
+            <AuthProvider>
+                <MemoryRouter>
+                    <Register />
+                </MemoryRouter>
+            </AuthProvider>
+        );
+
+        // fill out the input fields
+        const usernameInput = await screen.findByTestId('username-field');
+        const passwordInput = await screen.findByTestId('password-field');
+        const confirmPasswordInput = await screen.findByTestId('confirm-password-field');
+        const emailInput = await screen.findByTestId('email-field');
+        fireEvent.change(usernameInput, { target: { value: 'valid_username' } });
+        fireEvent.change(passwordInput, { target: { value: 'valid_password' } });
+        fireEvent.change(confirmPasswordInput, { target: { value: 'mismatched_password' } });
+        fireEvent.change(emailInput, { target: { value: 'valid_email@test.com' } });
+
+        // submit the data
+        fireEvent.click(screen.getByRole('button', { name: /Register/i }));
+
+        const passwordErrorText = await screen.findByText('Passwords do not match.');
+        expect(passwordErrorText).toBeInTheDocument();
+    });
+
+    it('Displays error messages when user registration fails server-side', async () => {
         const usernameErrorMsg = "A user with that username already exists.";
         const emailErrorMsg = "A user with that email already exists.";
         const passwordErrorMsg = "Invalid password.";
@@ -117,5 +143,42 @@ describe('Register component for new user signup', () => {
         expect(usernameErrorText).toBeInTheDocument();
         expect(passwordErrorText).toBeInTheDocument();
         expect(emailErrorText).toBeInTheDocument();
+    });
+
+    it('Displays default error messages when server returns error with no detail', async () => {
+        // override default register handler for this test to simulate failed registration attempt
+        server.use(
+            http.post('/api/register/', () => {
+                return HttpResponse.json(null, {status: 400});
+            })
+        );
+
+        render(
+            <AuthProvider>
+                <MemoryRouter>
+                    <Register />
+                </MemoryRouter>
+            </AuthProvider>
+        );
+
+        // fill out the input fields
+        const usernameInput = await screen.findByTestId('username-field');
+        const passwordInput = await screen.findByTestId('password-field');
+        const confirmPasswordInput = await screen.findByTestId('confirm-password-field');
+        const emailInput = await screen.findByTestId('email-field');
+        const fnameInput = await screen.findByTestId('fname-field');
+        const lnameInput = await screen.findByTestId('lname-field');
+        fireEvent.change(usernameInput, { target: { value: 'testuser' } });
+        fireEvent.change(passwordInput, { target: { value: 'password123' } });
+        fireEvent.change(confirmPasswordInput, { target: { value: 'password123' } });
+        fireEvent.change(emailInput, { target: { value: 'test@test.com' } });
+        fireEvent.change(fnameInput, { target: { value: 'Test' } });
+        fireEvent.change(lnameInput, { target: { value: 'User' } });
+
+        // submit the data
+        fireEvent.click(screen.getByRole('button', { name: /Register/i }));
+
+        const errorText = await screen.findByText("An unexpected error occurred.");
+        expect(errorText).toBeInTheDocument();
     });
 });
