@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
@@ -66,10 +66,17 @@ class MeView(APIView):
 class ProjectsView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
-        projects = Project.objects.filter(owner=request.user).order_by("-updated_at")
+    def get(self, request, pk):
+        """ fetch a single project by the primary key """
+        project = get_object_or_404(Project, pk=pk)
 
-        serializer = ProjectSerializer(data=projects, many=True)
+        if project.owner != request.user:
+            return Response(
+                {'detail': 'You do not have permission to view this project.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        serializer = ProjectSerializer(project)
         return Response(serializer.data)
 
 
@@ -79,5 +86,13 @@ class AllProjectsView(APIView):
     def get(self, request):
         projects = Project.objects.filter(owner=request.user).order_by("-updated_at")
 
-        serializer = AllProjectsSerializer(data=projects, many=True)
+        serializer = AllProjectsSerializer(projects, many=True)
         return Response(serializer.data)
+
+    def post(self, request):
+        serializer = AllProjectsSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        new_project = serializer.save(owner=request.user)
+
+        return Response(AllProjectsSerializer(new_project).data, status=status.HTTP_201_CREATED)

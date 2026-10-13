@@ -52,12 +52,18 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
+    """ Used for the detailed Project view, includes the document JSON """
+    owner = serializers.ReadOnlyField(source='owner.username')
+
     class Meta:
         model = Project
         fields = ('id', 'name', 'owner', 'description', 'document', 'created_at', 'updated_at')
 
 
 class AllProjectsSerializer(serializers.ModelSerializer):
+    """ Used for the main Dashboard, excludes the document JSON """
+    owner = serializers.ReadOnlyField(source='owner.username')
+
     class Meta:
         model = Project
         fields = ('id', 'name', 'owner', 'description', 'created_at', 'updated_at')
