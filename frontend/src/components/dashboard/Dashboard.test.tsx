@@ -1,8 +1,8 @@
 import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { describe, it, expect, vi, type Mock } from 'vitest';
-import { AuthProvider } from '../context/AuthContext';
-import { useAuth } from "../context/AuthContext";
+import { AuthProvider } from '../../context/AuthContext';
+import { useAuth } from "../../context/AuthContext";
 import Dashboard from './Dashboard';
 
 // mock the hook structure
