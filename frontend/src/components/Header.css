@@ -1,0 +1,78 @@
+.site-header {
+    background: var(--accent);
+    color: #1f2028;
+    border-bottom: 4px solid var(--accent-border);
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.header-container {
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-logo-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: #111827;
+}
+
+.header-logo-img {
+    height: 44px;
+    width: auto;
+    object-fit: contain;
+}
+
+.header-title {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.header-nav {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #1f2028;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.15s;
+}
+
+.nav-link:hover {
+    color: var(--accent-bg);
+}
+
+.account-badge {
+    background-color: rgb(85 55 112);
+    padding: 6px 12px;
+    border-radius: 9999px;
+    color: var(--text);
+}
+
+.account-badge:hover {
+    background-color: #e5e7eb;
+    color: #111827;
+}
+
+.btn-register {
+    background-color: #4f46e5;
+    color: white;
+    padding: 6px 16px;
+    border-radius: 6px;
+}
+
+.btn-register:hover {
+    background-color: #4338ca;
+    color: white;
+}

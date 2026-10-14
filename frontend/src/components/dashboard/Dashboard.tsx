@@ -1,19 +1,14 @@
 import React, {useEffect, useState} from "react";
-import { useAuth } from "../../context/AuthContext";
 import { fetchAllProjects} from "../../services/projectService.ts";
 import type {ProjectListItem} from "../../interfaces/Project.ts";
 import CreateProjectModal from "./CreateProjectModal";
 import './Dashboard.css'
 
 export default function Dashboard():React.JSX.Element {
-    const {logout} = useAuth();
     const [projects, setProjects] = useState<ProjectListItem[]>([]);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
 
-    const handleLogoutClick = async () => {
-        await logout();
-    }
 
     // download lightweight project list when dashboard loads
     useEffect(() => {
@@ -37,12 +32,12 @@ export default function Dashboard():React.JSX.Element {
         <div className="dashboard-container">
             <div className="dashboard-header">
                 <h1>Project Dashboard</h1>
-                <button className="btn-primary" onClick={()=> setIsModalOpen(true)}>
-                    + Create Project
-                </button>
-                <button className="btn-secondary" onClick={handleLogoutClick}>
-                    Logout
-                </button>
+
+                <p>
+                    <button className="btn-primary" onClick={()=> setIsModalOpen(true)}>
+                        + Create Project
+                    </button>
+                </p>
             </div>
 
             {error && <p className="error">{error}</p>}
