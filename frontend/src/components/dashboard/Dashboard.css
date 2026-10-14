@@ -1,9 +1,7 @@
 /* src/components/Dashboard.css */
 
 .dashboard-container {
-    width: 100%;
-    margin: 0 auto;
-    padding: 40px 0;
+    padding: 40px;
     font-family: system-ui, -apple-system, sans-serif;
 }
 
@@ -73,7 +71,7 @@
 /* Grid Listing Cards */
 .project-grid {
     list-style: none;
-    padding: 0 20px;
+    padding: 0;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
