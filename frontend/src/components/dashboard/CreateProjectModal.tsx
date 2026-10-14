@@ -38,7 +38,7 @@ export default function CreateProjectModal({onClose, onProjectCreated}: CreatePr
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal-card" onClick={(e) => e.stopPropagation()}>
                 <h3>Create New Project</h3>
-                {error && <p className="error">{error}</p>}
+                {error && <p className="error" data-testid="error-msg">{error}</p>}
 
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
@@ -70,7 +70,7 @@ export default function CreateProjectModal({onClose, onProjectCreated}: CreatePr
                         <button className="btn-secondary" onClick={onClose} disabled={loading}>
                             Cancel
                         </button>
-                        <button type="submit" className="btn-primary" disabled={loading}>
+                        <button type="submit" className="btn-primary" disabled={loading} data-testid="create-btn">
                             {loading ? 'Creating...' : 'Create Project'}
                         </button>
                     </div>

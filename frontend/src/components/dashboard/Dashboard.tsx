@@ -48,7 +48,7 @@ export default function Dashboard():React.JSX.Element {
             {error && <p className="error">{error}</p>}
 
             {projects.length === 0 ? (
-                <p>You have no projects. Click the Create Project button above to get started.</p>
+                <p data-testid="no-projects">You have no projects. Click the Create Project button above to get started.</p>
             ) : (
                 <ul className="project-grid">
                     {projects.map((proj: ProjectListItem) => (
