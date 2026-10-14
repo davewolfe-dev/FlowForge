@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { http, HttpResponse } from 'msw';
 import { server } from '../mocks/server';
-import { fetchAllProjects, createNewProject } from './projectService';
+import { fetchAllProjects, fetchProject, createNewProject } from './projectService';
 
 describe('ProjectService API', () => {
     it('resolves fetchAllProjects with array of projects', async () => {
@@ -11,6 +11,15 @@ describe('ProjectService API', () => {
         expect(projects.length).toBe(1);
         expect(projects[0].name).toBe('Service Project One');
         expect(projects[0].owner).toBe('bill');
+    });
+
+    it('resolves fetchProject with single detailed project', async () => {
+        const project = await fetchProject(1);
+
+        expect(Array.isArray(project)).toBe(false);
+        expect(project.name).toBe('Service Project One');
+        expect(project.owner).toBe('bill');
+        expect(project.document).toBeDefined();
     });
 
     it('transmits parameters to createNewProject and resolves with a 201 created project object payload', async () => {

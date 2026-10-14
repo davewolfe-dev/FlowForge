@@ -56,4 +56,18 @@ export const handlers = [
             updated_at: '2026-10-13T15:00:00Z',
         }, { status: 201 });
     }),
+
+    // mock /api/projects/<pk>/
+    http.get('/api/projects/1/', () => {
+        return HttpResponse.json(
+            {
+                id: 1,
+                name: 'Service Project One',
+                owner: 'bill',
+                description: 'Testing service layers.',
+                document: {},
+                created_at: '2026-10-13T12:00:00Z',
+                updated_at: '2026-10-13T12:00:00Z',
+            }, { status: 200 });
+    }),
 ]

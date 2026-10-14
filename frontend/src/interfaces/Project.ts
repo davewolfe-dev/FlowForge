@@ -7,12 +7,12 @@ export interface ProjectListItem {
     updated_at: string;
 }
 
-export interface ProjectDetail {
+export interface ProjectItem {
     id: number;
     name: string;
     owner: string;
     description: string;
-    document: string;
+    document: object;
     created_at: string;
     updated_at: string;
 }
