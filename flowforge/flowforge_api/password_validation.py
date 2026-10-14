@@ -20,10 +20,6 @@ class AlphaNumericSpecialCharValidator:
         if not has_uppercase:
             raise ValidationError(self.error_message, code=self.error_code)
 
-        has_alpha = any(char.isalpha() for char in password)
-        if not has_alpha:
-            raise ValidationError(self.error_message, code=self.error_code)
-
         has_punctuation = any(char in string.punctuation for char in password)
         if not has_punctuation:
             raise ValidationError(self.error_message, code=self.error_code)

@@ -63,7 +63,7 @@ class MeView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class ProjectsView(APIView):
+class ProjectView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pk):
