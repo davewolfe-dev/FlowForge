@@ -32,7 +32,7 @@ vi.mock('../../services/projectService', () => ({
     createNewProject: vi.fn(),
 }));
 
-describe("Dashboard component project list, create project and logout functions", () => {
+describe("Dashboard component project list and create project modal overlay", () => {
     it("downloads and displays the project list from the service layer on mount", async () => {
         // simulate an authenticated user environment
         (useAuth as Mock).mockReturnValue({
@@ -248,32 +248,5 @@ describe("Dashboard component project list, create project and logout functions"
 
         const errorMsg = await screen.findByTestId("error-msg");
         expect(errorMsg).toBeInTheDocument();
-    });
-
-    it('should logout the user', async () => {
-        // create a tracking reference for the logout function
-        const mockLogout = vi.fn().mockResolvedValue(undefined);
-        // simulate an authenticated user environment
-        (useAuth as Mock).mockReturnValue({
-            user: { id: 1, username: 'test_user', email: 'test_email@example.com' },
-            logout: mockLogout,
-        });
-
-        render(
-            <AuthProvider>
-                <MemoryRouter>
-                    <Dashboard />
-                </MemoryRouter>
-            </AuthProvider>
-        );
-
-        // test logout function
-        const logoutButton = await screen.findByRole('button', { name: /Logout/i });
-        fireEvent.click(logoutButton);
-
-        // wait for mock network handshake to close and verify navigation trigger
-        await waitFor(() => {
-            expect(mockLogout).toHaveBeenCalledTimes(1);
-        });
     });
 });

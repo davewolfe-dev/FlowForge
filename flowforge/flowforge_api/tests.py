@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from flowforge_api.models import Project
+
 
 class AuthAPITests(APITestCase):
 
@@ -141,3 +143,83 @@ class RegisterAPITests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         # ensure django rest framework error dictionary targets the password field
         self.assertIn('password', response.data)
+
+
+class ProjectAPITests(APITestCase):
+    def setUp(self):
+        self.user_a = User.objects.create_user(username="user_a", email="user_a@test.com", password="password123")
+        self.user_b = User.objects.create_user(username="user_b", email="user_b@test.com", password="password123")
+
+        self.project_a = Project.objects.create(
+            owner=self.user_a,
+            name="Test Project A",
+            description="Project owned by User A",
+        )
+
+        self.project_b = Project.objects.create(
+            owner=self.user_b,
+            name="Test Project B",
+            description="Project owned by User B",
+        )
+
+        self.projects_url = reverse('api-all-projects')
+
+    def test_unauthenticated_user_blocked_from_projects(self):
+        """Verify that unauthenticated users cannot access the projects API."""
+        response = self.client.get(self.projects_url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_endpoint_returns_only_owned_projects(self):
+        """Verify that endpoint returns only projects owned by logged-in user."""
+        self.client.login(username=self.user_a.username, password="password123")
+
+        response = self.client.get(self.projects_url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['name'], "Test Project A")
+
+        # verify the document field is not included
+        self.assertNotIn('document', response.data[0])
+
+    def test_create_project_succeeds_and_assigns_owner(self):
+        """Verify that new projects are added to the database and owner field is populated."""
+        self.client.login(username=self.user_a.username, password="password123")
+        payload = {
+            "name": "A New Project",
+            "description": "A new test project from user_a",
+        }
+        response = self.client.post(self.projects_url, payload, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # Verify record exists in db and has matching owner
+        project = Project.objects.get(id=response.data['id'])
+        self.assertEqual(project.owner, self.user_a)
+        self.assertEqual(project.name, payload['name'])
+
+        # Verify that document defaulted to an empty dictionary
+        self.assertEqual(project.document, {})
+
+    def test_single_project_detail_includes_documents(self):
+        """Verify that single project fetch by id includes the heavy document."""
+        self.client.login(username=self.user_a.username, password="password123")
+        detail_url = reverse('api-single-project', kwargs={'pk': self.project_a.id})
+        response = self.client.get(detail_url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['name'], "Test Project A")
+        # Verify the heavy document schema block is present for detail views
+        self.assertIn('document', response.data)
+
+    def test_user_blocked_from_accessing_other_peoples_projects(self):
+        """Verify User A cannot access User B's project data."""
+        self.client.login(username="user_a", password="password123")
+
+        # Malicious Attempt: User A explicitly tries to fetch User B's project ID details
+        malicious_url = reverse('api-single-project', kwargs={'pk': self.project_b.id})
+        response = self.client.get(malicious_url)
+
+        # Verify the backend intercepts the ID mismatch and blocks the transfer
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.data['detail'], "You do not have permission to view this project.")
