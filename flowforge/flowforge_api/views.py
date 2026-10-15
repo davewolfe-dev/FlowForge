@@ -1,7 +1,9 @@
+from django.db import transaction
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
+from rest_framework.exceptions import APIException
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -63,6 +65,55 @@ class MeView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class RevisionConflict(APIException):
+    status_code = status.HTTP_409_CONFLICT
+    default_detail = (
+        "The document has changed since it was loaded."
+    )
+    default_code = "revision_conflict"
+
+
+class ProjectDocumentView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, pk):
+        """ updates a project document """
+        document = request.data.get('document')
+        if not isinstance(document, dict):
+            return Response(
+                {'detail': 'Invalid document structure.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        expected_version = request.data.get('document_version')
+        if not isinstance(expected_version, int) or isinstance(expected_version, bool):
+            return Response(
+                {'detail': 'Invalid document version.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            with transaction.atomic():
+                project: Project = (
+                    Project.objects
+                    .select_for_update()
+                    .get(pk=pk, owner=request.user)
+                )
+
+            if project.document_version != expected_version:
+                raise RevisionConflict()
+
+            project.document = document
+            project.document_version += 1
+            project.save(
+                update_fields=['document', 'document_version']
+            )
+            return Response({"document_version": project.document_version})
+
+        except Project.DoesNotExist:
+            return Response({"detail": "Project does not exist."}, status=status.HTTP_404_NOT_FOUND)
+
+
 class ProjectView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -78,6 +129,8 @@ class ProjectView(APIView):
 
         serializer = ProjectSerializer(project)
         return Response(serializer.data)
+
+
 
 
 class AllProjectsView(APIView):

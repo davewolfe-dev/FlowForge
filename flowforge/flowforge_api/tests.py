@@ -223,3 +223,35 @@ class ProjectAPITests(APITestCase):
         # Verify the backend intercepts the ID mismatch and blocks the transfer
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(response.data['detail'], "You do not have permission to view this project.")
+
+    def test_save_project_document(self):
+        self.client.login(username=self.user_a.username, password="password123")
+        document_url = reverse('api-project-document', kwargs={'pk': self.project_a.id})
+        payload = {
+            "document_version": 1,
+            "document": {
+                "schemaVersion": 1,
+                "nodes": [
+                    {
+                        "id": "node-a1",
+                        "type": "trigger",
+                        "position": { "x": 120, "y": 160 },
+                        "data": {
+                            "label": "Start",
+                            "config": {}
+                        }
+                    }
+                ],
+                "edges": [],
+                "viewport": {
+                    "x": 0,
+                    "y": 0,
+                    "zoom": 1
+                }
+            }
+        }
+
+        response = self.client.put(document_url, data=payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # verify document version is incremented
+        self.assertEqual(response.data['document_version'], 2)
