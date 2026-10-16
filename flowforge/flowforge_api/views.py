@@ -131,8 +131,6 @@ class ProjectView(APIView):
         return Response(serializer.data)
 
 
-
-
 class AllProjectsView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -143,6 +141,7 @@ class AllProjectsView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
+        """ creates a new project """
         serializer = AllProjectsSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 

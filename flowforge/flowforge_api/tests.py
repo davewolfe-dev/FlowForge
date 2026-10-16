@@ -255,3 +255,32 @@ class ProjectAPITests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # verify document version is incremented
         self.assertEqual(response.data['document_version'], 2)
+
+    def test_version_mismatch_raises_error(self):
+        self.client.login(username=self.user_a.username, password="password123")
+        project_v2 = Project.objects.create(
+            owner=self.user_a,
+            name="Test Project Version 2",
+            description="Project owned by User A",
+            document_version=3,
+        )
+
+        document_url = reverse('api-project-document', kwargs={'pk': project_v2.id})
+        payload = {
+            "document_version": 1,
+            "document": {
+                "schemaVersion": 1,
+                "nodes": [],
+                "edges": [],
+                "viewport": {
+                    "x": 0,
+                    "y": 0,
+                    "zoom": 1
+                }
+            }
+        }
+
+        response = self.client.put(document_url, data=payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+        # verify document version was not incremented
+        self.assertEqual(project_v2.document_version, 3)
