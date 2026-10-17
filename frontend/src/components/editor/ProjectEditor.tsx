@@ -58,15 +58,25 @@ function EditorCanvas({projectId}: {projectId:number}):React.JSX.Element {
             return;
         }
 
-        payload.document.nodes = nodes;
-        payload.document.edges = edges;
+        const updatedPayload:DocumentPayload = {
+            ...payload,
+            document: {
+                ...payload.document,
+                nodes: nodes,
+                edges: edges,
+            }
+        }
 
         try {
-            const response = await axios.put(`/api/projects/${projectId}/document`, payload);
+            const response = await axios.put(`/api/projects/${projectId}/document`, updatedPayload);
             if (response.status !== 200) {
                 alert(`Failed to save project: ${response.status}, ${response.statusText}`)
             } else {
-                alert("Project updated successfully.")
+                setPayload({
+                    ...updatedPayload,
+                    document_version: response.data.document_version,
+                });
+                alert(`Project updated successfully to version ${response.data.document_version}.`);
             }
         } catch (error) {
             console.error(error);
