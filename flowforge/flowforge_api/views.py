@@ -100,14 +100,14 @@ class ProjectDocumentView(APIView):
                     .get(pk=pk, owner=request.user)
                 )
 
-            if project.document_version != expected_version:
-                raise RevisionConflict()
+                if project.document_version != expected_version:
+                    raise RevisionConflict()
 
-            project.document = document
-            project.document_version += 1
-            project.save(
-                update_fields=['document', 'document_version']
-            )
+                project.document = document
+                project.document_version += 1
+                project.save(
+                    update_fields=['document', 'document_version']
+                )
             return Response({"document_version": project.document_version})
 
         except Project.DoesNotExist:
@@ -128,12 +128,7 @@ class ProjectView(APIView):
             )
 
         serializer = ProjectSerializer(project)
-        project_data = serializer.data
-        project_data['document'] = {
-            'document_version': project.document_version,
-            'document': project.document,
-        }
-        return Response(project_data, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class AllProjectsView(APIView):

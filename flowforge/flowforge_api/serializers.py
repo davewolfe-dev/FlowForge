@@ -55,6 +55,12 @@ class ProjectSerializer(serializers.ModelSerializer):
     """ Used for the detailed Project view, includes the document JSON """
     owner = serializers.ReadOnlyField(source='owner.username')
 
+    def get_document(self, obj):
+        return {
+            'document_version': getattr(obj, 'document_version', 1),
+            'document': obj.document,
+        }
+
     class Meta:
         model = Project
         fields = ('id', 'name', 'owner', 'description', 'document', 'created_at', 'updated_at')
