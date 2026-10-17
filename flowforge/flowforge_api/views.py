@@ -128,7 +128,12 @@ class ProjectView(APIView):
             )
 
         serializer = ProjectSerializer(project)
-        return Response(serializer.data)
+        project_data = serializer.data
+        project_data['document'] = {
+            'document_version': project.document_version,
+            'document': project.document,
+        }
+        return Response(project_data, status=status.HTTP_200_OK)
 
 
 class AllProjectsView(APIView):

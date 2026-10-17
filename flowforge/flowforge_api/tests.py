@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from flowforge_api.models import Project
+from flowforge_api.models import Project, get_default_document
 
 
 class AuthAPITests(APITestCase):
@@ -198,8 +198,8 @@ class ProjectAPITests(APITestCase):
         self.assertEqual(project.owner, self.user_a)
         self.assertEqual(project.name, payload['name'])
 
-        # Verify that document defaulted to an empty dictionary
-        self.assertEqual(project.document, {})
+        # Verify that document defaulted to valid blank document
+        self.assertEqual(project.document, get_default_document())
 
     def test_single_project_detail_includes_documents(self):
         """Verify that single project fetch by id includes the heavy document."""
