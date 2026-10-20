@@ -9,8 +9,6 @@ export default function Dashboard():React.JSX.Element {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
 
-
-    // download lightweight project list when dashboard loads
     useEffect(() => {
         async function loadProjects() {
             try {

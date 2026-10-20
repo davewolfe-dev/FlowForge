@@ -82,8 +82,3 @@
 .project-card:hover {
     background: var(--accent-bg-hover);
 }
-
-.error {
-    color: red;
-    font-size: 14px;
-}

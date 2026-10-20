@@ -101,3 +101,8 @@ p {
   border-radius: 6px;
   cursor: pointer;
 }
+
+.error {
+  color: red;
+  font-size: 14px;
+}

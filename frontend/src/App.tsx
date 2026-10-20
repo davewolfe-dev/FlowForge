@@ -25,6 +25,7 @@ function App(): React.JSX.Element {
             {/* Protected Routes */}
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/project/:id/edit" element={<ProjectEditor />} />
             </Route>
 
             {/* Catch-all 404 */}
