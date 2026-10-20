@@ -115,8 +115,13 @@ function EditorCanvas({projectId}: {projectId:number}):React.JSX.Element {
     );
 }
 
-// Wrapper component to guarantee sub-hooks evaluate correctly within context bounds
-export default function ProjectEditor({projectId}: {projectId:number}):React.JSX.Element {
+export default function ProjectEditor():React.JSX.Element {
+    const { id } = useParams<{ id: string }>();
+    if (!id) return <NotFound/>;
+
+    const projectId = parseInt(id);
+    if (isNaN(projectId)) return <NotFound/>;
+
     return (
         <ReactFlowProvider>
             <EditorCanvas projectId={projectId} />
