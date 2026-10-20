@@ -8,8 +8,8 @@ import Dashboard from "./components/dashboard/Dashboard";
 import Register from "./components/Register";
 import Home from "./components/Home";
 import Header from "./components/Header";
-
-const NotFound = (): React.JSX.Element => <h1>404 Page Not Found</h1>;
+import ProjectEditor from "./components/editor/ProjectEditor.tsx";
+import NotFound from "./components/NotFound.tsx";
 
 function App(): React.JSX.Element {
   return (
