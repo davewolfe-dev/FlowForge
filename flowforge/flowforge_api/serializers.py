@@ -54,6 +54,7 @@ class UserSerializer(serializers.ModelSerializer):
 class ProjectSerializer(serializers.ModelSerializer):
     """ Used for the detailed Project view, includes the document JSON """
     owner = serializers.ReadOnlyField(source='owner.username')
+    document = serializers.SerializerMethodField()
 
     def get_document(self, obj):
         return {
