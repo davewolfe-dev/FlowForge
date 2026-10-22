@@ -29,7 +29,6 @@ function EditorCanvas({projectId}: {projectId:number}):React.JSX.Element {
                 setLoading(true);
                 const project = await fetchProject(projectId);
                 const data:DocumentPayload = project.document;
-                console.log(data);
                 setNodes(data.document.nodes || []);
                 setEdges(data.document.edges || []);
                 setPayload(data);
