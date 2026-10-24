@@ -64,3 +64,9 @@ export interface DocumentPayload {
     document_version: number;
     document: ProjectDocument;
 }
+
+export interface ProjectResponse {
+    status: number;
+    statusText: string;
+    data: DocumentPayload;
+}

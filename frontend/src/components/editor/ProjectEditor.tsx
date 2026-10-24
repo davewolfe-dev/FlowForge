@@ -11,10 +11,9 @@ import {
 } from "@xyflow/react";
 import type {ProjectEdge, ProjectNode, DocumentPayload} from "../../interfaces/Project.ts";
 import '@xyflow/react/dist/style.css';
-import axios from "axios";
 import NotFound from "../NotFound.tsx";
 import {useParams} from "react-router";
-import {fetchProject} from "../../services/projectService.ts";
+import {fetchProject, updateProject} from "../../services/projectService.ts";
 
 function EditorCanvas({projectId}: {projectId:number}):React.JSX.Element {
     const [nodes, setNodes, onNodesChange] = useNodesState<ProjectNode>([]);
@@ -67,7 +66,7 @@ function EditorCanvas({projectId}: {projectId:number}):React.JSX.Element {
         }
 
         try {
-            const response = await axios.put(`/api/projects/${projectId}/document`, updatedPayload);
+            const response = await updateProject(projectId, updatedPayload);
             if (response.status !== 200) {
                 alert(`Failed to save project: ${response.status}, ${response.statusText}`)
             } else {

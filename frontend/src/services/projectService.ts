@@ -1,5 +1,5 @@
 import axios from "axios";
-import type {ProjectItem, ProjectListItem} from "../interfaces/Project.ts";
+import type {DocumentPayload, ProjectItem, ProjectListItem, ProjectResponse} from "../interfaces/Project.ts";
 
 /**
  * Sends a POST request to server to create a new project record
@@ -29,4 +29,8 @@ export async function fetchAllProjects(): Promise<ProjectListItem[]> {
 export async function fetchProject(id: number): Promise<ProjectItem> {
     const response = await axios.get(`/api/projects/${id}/`);
     return response.data;
+}
+
+export async function updateProject(projectId: number, projectPayload: DocumentPayload): Promise<ProjectResponse>{
+    return await axios.put(`/api/projects/${projectId}/document`, projectPayload);
 }
