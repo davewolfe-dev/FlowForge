@@ -2,9 +2,10 @@
     background: var(--accent);
     color: #1f2028;
     border-bottom: 4px solid var(--accent-border);
-    padding: 15px;
+    padding: 0 15px;
     display: flex;
     justify-content: space-between;
+    height: var(--header-height);
 }
 
 .header-container {

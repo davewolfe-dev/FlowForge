@@ -10,16 +10,19 @@ import {
     addEdge, ReactFlowProvider
 } from "@xyflow/react";
 import type {ProjectEdge, ProjectNode, DocumentPayload} from "../../interfaces/Project.ts";
-import '@xyflow/react/dist/style.css';
 import NotFound from "../NotFound.tsx";
 import {useParams} from "react-router";
 import {fetchProject, updateProject} from "../../services/projectService.ts";
+
+import '@xyflow/react/dist/style.css';
+import './ProjectEditor.css'
 
 function EditorCanvas({projectId}: {projectId:number}):React.JSX.Element {
     const [nodes, setNodes, onNodesChange] = useNodesState<ProjectNode>([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState<ProjectEdge>([]);
     const [payload, setPayload] = useState<DocumentPayload | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
+    const [projectName, setProjectName] = useState<string>("");
     const [error, setError] = useState<string>("");
 
     useEffect(() => {
@@ -28,6 +31,7 @@ function EditorCanvas({projectId}: {projectId:number}):React.JSX.Element {
                 setLoading(true);
                 const project = await fetchProject(projectId);
                 const data:DocumentPayload = project.document;
+                setProjectName(project.name);
                 setNodes(data.document.nodes || []);
                 setEdges(data.document.edges || []);
                 setPayload(data);
@@ -85,39 +89,35 @@ function EditorCanvas({projectId}: {projectId:number}):React.JSX.Element {
         return <div className="flex h-screen items-center justify-center">Loading canvas layout...</div>;
     }
 
-    return (
-        <div className="relative flex h-screen w-screen flex-col bg-slate-50">
-            {error ? (<div className="error"> {error} </div>) :
-                (
-                    <>
-                        {/* Top action bar overlay */}
-                        <header className="absolute top-4 left-4 z-10 flex gap-2 rounded-lg bg-white p-2 shadow-md">
-                            <h1 className="text-sm font-semibold text-slate-700 self-center px-2">Workflow Builder</h1>
-                            <button
-                                onClick={handleSaveLayout}
-                                className="rounded bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700 transition">
-                                Save Layout
-                            </button>
-                        </header>
+    if (error) {
+        return <div className="error"> {error} </div>;
+    }
 
-                        {/* Main Canvas Viewport container */}
-                        <div className="flex-1 w-full h-full">
-                            <ReactFlow
-                                nodes={nodes}
-                                edges={edges}
-                                onNodesChange={onNodesChange}
-                                onEdgesChange={onEdgesChange}
-                                onConnect={onConnect}
-                                fitView
-                            >
-                                <Background color="#cbd5e1" gap={16} size={1}/>
-                                <Controls/>
-                                <MiniMap nodeStrokeWidth={3} zoomable pannable/>
-                            </ReactFlow>
-                        </div>
-                    </>
-                )
-            }
+    return (
+        <div className="editor-layout-wrapper">
+            {/* Top action bar overlay */}
+            <header className="canvas-action-header">
+                <h2>{projectName}</h2>
+                <button onClick={handleSaveLayout} className="btn-primary">
+                    Save Layout
+                </button>
+            </header>
+
+            {/* Main Canvas Viewport container */}
+            <div className="canvas-container">
+                <ReactFlow
+                    nodes={nodes}
+                    edges={edges}
+                    onNodesChange={onNodesChange}
+                    onEdgesChange={onEdgesChange}
+                    onConnect={onConnect}
+                    fitView
+                >
+                    <Background color="#cbd5e1" gap={16} size={1}/>
+                    <Controls/>
+                    <MiniMap nodeStrokeWidth={3} zoomable pannable/>
+                </ReactFlow>
+            </div>
         </div>
     );
 }
